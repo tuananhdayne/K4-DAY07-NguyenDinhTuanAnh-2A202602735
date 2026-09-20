@@ -4,11 +4,11 @@ Thư mục tài liệu : data/ecommerce
 Chiến lược chunk : window (SentenceWindowChunker) [window_size=3]
 ================================================================================
 
-[1] Chunking corpus (16 files) ngoài store...
-    Tổng cộng 234 chunks được tạo từ 16 tài liệu.
+[1] Chunking corpus (14 files) ngoài store...
+    Tổng cộng 232 chunks được tạo từ 14 tài liệu.
 
 [2] Nạp vào EmbeddingStore...
-    Kho EmbeddingStore đã lập chỉ mục: 234 chunks.
+    Kho EmbeddingStore đã lập chỉ mục: 232 chunks.
 
 [3] Đang chạy 5 Benchmark Queries...
 --------------------------------------------------------------------------------

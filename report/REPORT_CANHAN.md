@@ -1,8 +1,9 @@
 # Báo Cáo Cá Nhân — Lab 7: Embedding & Vector Store
 
 **Họ tên:** Nguyễn Đình Tuấn Anh  
-**Nhóm:** Nhóm 2A — K4-L3B (Thương Mại Điện Tử)  
-**Ngày:** 2026-09-20  
+**Nhóm:** AGI (K4-L3B — Thương Mại Điện Tử)  
+**Vai trò:** Data Lead (`SentenceChunker` / `SentenceWindowChunker`)  
+**Ngày:** 20/09/2026  
 
 > **Nộp 1 bản / sinh viên.** Phần nhóm (lựa chọn tài liệu, thiết kế chiến lược, bộ câu hỏi đánh giá, demo) nộp chung 1 bản trong `REPORT_NHOM.md`. Chi tiết thang điểm: `docs/SCORING.md`.
 
@@ -52,7 +53,8 @@
 
 ## 2. Hướng tiếp cận của tôi (My Approach) — Cá nhân (10 điểm)
 
-Giải thích cách tiếp cận của bạn khi lập trình (implement) các phần chính trong gói `src`.
+### Trách nhiệm Data Lead & Quản trị dữ liệu nhóm AGI
+> Với vai trò **Data Lead** của nhóm AGI, tôi trực tiếp chịu trách nhiệm thu thập, làm sạch định dạng Markdown và gán nhãn siêu dữ liệu (Metadata) cho **14 tài liệu chính sách Shopee Việt Nam** tại thư mục `data/ecommerce/`, đồng bộ 1-1 với bảng kê `sources.csv`. Tôi thiết kế hệ thống metadata phân loại rõ ràng theo `audience` (`buyer`, `both`) và `category` (`returns-policy`, `negotiation`, `shipping-fee`...) để phục vụ kỹ thuật **Tiền lọc (Pre-filtering)** trong hệ thống RAG, giúp loại bỏ nhiễu giữa các đối tượng khác nhau.
 
 ### Các hàm chia nhỏ (Chunking Functions)
 
@@ -187,9 +189,10 @@ Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân củ
 > - **Thử thách với MockEmbedder:** Do mỗi câu đều được mở rộng thành một cửa sổ lớn (234 chunks trong toàn bộ corpus), không gian vector ngẫu nhiên của hàm băm MD5 bị tăng thêm nhiều ứng viên nhiễu. Dù vậy, tỷ lệ trúng của `SentenceWindowChunker` vẫn rất ấn tượng nhờ bảo lưu được ngữ cảnh trọn vẹn.
 > - **Hiệu quả của Metadata Filter (Câu Q4):** Bộ lọc `audience="both"` đã loại bỏ triệt để các tài liệu một chiều chỉ dành riêng cho Người mua hoặc Người bán, cô lập không gian tìm kiếm về đúng các quy trình thương lượng song phương.
 
-**Điều hay nhất tôi học được từ thành viên khác / nhóm khác (qua demo):**
-> 1. **Hiệu lực tuyệt đối của Metadata Filtering (Câu Q4):** Trong môi trường MockEmbedder hay kể cả embedding thực tế, khi câu hỏi không ghi rõ vai vế của người hỏi, bộ lọc siêu dữ liệu cứng (`audience: "both"` hoặc `audience: "seller"`) là cơ chế duy nhất đảm bảo khoanh vùng chính xác vào tài liệu liên quan, ngăn chặn triệt để việc nhầm lẫn tài liệu giữa các đối tượng.
-> 2. **Header Injection của HeadingChunker:** Kỹ thuật chèn lại tiêu đề đề mục vào từng đoạn con của Thành viên khác giúp các chunk nhỏ không bao giờ bị mất gốc ngữ cảnh (context loss) khi trích xuất vào LLM.
+**Điều hay nhất tôi học được từ thành viên khác trong nhóm AGI (qua thảo luận & demo):**
+> 1. **Kỹ thuật Header Injection của Châu Tùng Dương (`CustomHeadingChunker`):** Dương đã thiết kế giải pháp phân tách tài liệu pháp lý cực kỳ thông minh: tách theo tiêu đề `#`, `##` và tiểu mục số (`1.1.`, `1.2.`), sau đó tự động gắn tiền tố `[Tên điều khoản]` vào đầu mỗi mảnh con. Nhờ đó, kho dữ liệu giảm từ 234 chunks xuống chỉ còn **111 chunks** (tiết kiệm 52% bộ nhớ và chi phí embedding), đồng thời giải quyết triệt để lỗi mất gốc ngữ cảnh ở Câu Q4 mà `SentenceChunker` của tôi gặp phải do câu bị tách rời khỏi tiêu đề quy định.
+> 2. **Sức mạnh của Embedding ngữ nghĩa thật từ Nguyễn Ngọc Tuyền (`RecursiveChunker` + `gemini-embedding-001`):** Khi Tuyền tích hợp mô hình nhúng AI thật (`gemini-embedding-001`), điểm số đạt tuyệt đối **10/10 (5/5 Top-1)**. Điều này chứng minh thuật toán chunking dù tốt đến đâu cũng cần một mô hình embedding hiểu sâu tiếng Việt để phát huy tối đa hiệu quả trong hệ thống RAG thực tế.
+> 3. **Tổ chức Demo & Kịch bản thuyết trình từ Ngô Anh Tú:** Tú đã xây dựng luồng so sánh trực quan giữa 3 chiến lược, làm nổi bật sự đánh đổi (trade-off) giữa số lượng chunk, chi phí lưu trữ và độ chính xác truy xuất.
 
 ---
 
