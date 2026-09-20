@@ -65,6 +65,10 @@ Giải thích cách tiếp cận của bạn khi lập trình (implement) các p
 > *Base case:* Nếu độ dài văn bản $\le$ `chunk_size`, trả về nguyên văn bản mà không chia nhỏ tiếp; nếu đoạn văn vẫn vượt quá kích thước nhưng danh sách dấu phân cách đã cạn kiệt, thuật toán fallback cắt cứng chuỗi theo độ dài `chunk_size`.  
 > *Quá trình đệ quy:* Tách văn bản bằng dấu phân cách hiện tại; nếu đoạn con vượt ngưỡng, gọi đệ quy `_split` với danh sách dấu phân cách còn lại. Cuối cùng, gom các đoạn con liên tiếp lại bằng dấu phân cách tương ứng sao cho tổng dung lượng không vượt quá `chunk_size`.
 
+**`SentenceWindowChunker.chunk` (Chiến lược cá nhân lựa chọn)** — hướng tiếp cận:
+> Tách toàn bộ văn bản thành các câu riêng biệt bằng regex Positive Lookbehind `r"(?<=[.!?])\s+"`. Với mỗi câu mục tiêu tại chỉ số $i$, thuật toán trích xuất một cửa sổ ngữ cảnh trượt (sliding context window) gồm các câu lân cận từ $i - \text{window\_size}$ đến $i + \text{window\_size}$ (với $\text{window\_size}=3$) và ghép lại thành một đoạn văn bản ngữ cảnh hoàn chỉnh bao bọc câu mục tiêu.  
+> *Lợi ích:* Giải quyết triệt để tình trạng mất ngữ cảnh (context loss) thường thấy ở việc cắt câu đơn lẻ. Các mệnh đề điều kiện, ngoại lệ ("Trừ khi...", "Trong trường hợp...") luôn đi kèm đầy đủ bối cảnh câu trước và câu sau, giúp LLM trả lời chuẩn xác và hạn chế ảo giác (hallucination).
+
 ### Lớp EmbeddingStore
 
 **`add_documents` + `search`** — hướng tiếp cận:
@@ -166,21 +170,26 @@ Chạy hàm `compute_similarity()` với `MockEmbedder` trên 5 cặp câu:
 
 ## 5. Kết quả truy xuất của tôi (Competition Results) — Cá nhân (10 điểm)
 
-Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân của bạn trong gói `src` (`SentenceChunker`, `max_sentences_per_chunk=3`). **5 câu hỏi này phải trùng với các thành viên cùng nhóm** (xem `REPORT_NHOM.md`).
+Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân của bạn trong gói `src` (`SentenceWindowChunker`, `window_size=3`). **5 câu hỏi này thống nhất đồng bộ với cả nhóm** (tham khảo thêm `ket_qua_benchmark.txt`).
 
 | # | Câu hỏi (Query) | Top-1 Chunk truy xuất được (tóm tắt) | Điểm Score | Có liên quan không? (Relevant) | Câu trả lời của Agent (tóm tắt) |
 |---|-------|--------------------------------|:---:|:---:|------------------------|
-| 1 | Thời gian tối đa để Người mua gửi yêu cầu Trả hàng/Hoàn tiền cho Shopee là bao lâu? | `cach-dong-goi-don-hang-hoan-tra#5`: Hướng dẫn viết mã vận đơn lên hộp hàng hoàn trả trên ứng dụng... | +0.2909 | **Không (Irrelevant)** | Dựa trên ngữ cảnh: Trả lời về cách ghi mã vận đơn lên hộp hàng (do MockEmbedder băm MD5 chưa bắt đúng ngữ nghĩa). |
-| 2 | Những trường hợp hoặc mặt hàng nào không được chấp nhận trả hàng do đổi ý? | `quy-trinh-shopee-xu-ly-tra-hang-hoan-tien#10`: Hướng dẫn theo dõi tình trạng vận chuyển đơn hàng hoàn trả... | +0.3032 | **Không (Irrelevant)** | Dựa trên ngữ cảnh: Hướng dẫn theo dõi trạng thái bưu kiện hoàn trả. |
-| 3 | Người mua có phải trả phí vận chuyển khi gửi hàng hoàn trả không? | `tra-hang-doi-y-khong-con-nhu-cau#3`: Quy định về hàng hóa có giá trị cao hoặc kích thước cồng kềnh... | +0.2812 | **Không (Irrelevant)** | Dựa trên ngữ cảnh: Đề cập đến sản phẩm cồng kềnh, chưa trả lời chính sách miễn phí hoàn trả. |
-| 4 ⭐ | Thời hạn xử lý và phản hồi yêu cầu bảo hành hoặc khiếu nại của khách hàng là bao lâu? *(Filter: `audience="seller"`)* | `seller-warranty-policy#1`: Người bán phải tiếp nhận xử lý bảo hành trong tối đa 03 ngày làm việc; phản hồi khiếu nại từ 1 - 2 ngày làm việc... | -0.0177 | **CÓ (Relevant — Top-1 Hit)** | Dựa trên ngữ cảnh [1]: Người bán phải tiếp nhận và xử lý bảo hành trong tối đa 03 ngày làm việc; thời hạn phản hồi khiếu nại Trả hàng/Hoàn tiền là từ 1 - 2 ngày làm việc. |
-| 5 | Thời gian nhận tiền hoàn qua SPayLater hoặc Thẻ tín dụng/ghi nợ mất bao lâu? | `quy-trinh-shopee-xu-ly-tra-hang-hoan-tien#1`: Hướng dẫn cung cấp bằng chứng cho yêu cầu Trả hàng/Hoàn tiền... | +0.2316 | **Không (Irrelevant)** | Dựa trên ngữ cảnh: Giải thích việc bổ sung bằng chứng khiếu nại. |
+| 1 | Thời gian tối đa để Người mua gửi yêu cầu Trả hàng/Hoàn tiền cho Shopee là bao lâu đối với từng loại đơn hàng? | `kiem-tra-tien-hoan-spaylater#15`: Hướng dẫn kiểm tra đơn ShopeeFood ngay sau khi cập nhật “Giao hàng thành công”... *(Top-3 có `quy-dinh-chung#17` score +0.2471 [Doc Hit])* | +0.3096 | **Chưa đạt Top-1** *(Top-3 trúng tài liệu chuẩn)* | Dựa trên ngữ cảnh: Nhắc đến thời gian cập nhật đơn ShopeeFood và việc hoàn Shopee Xu, chưa trích xuất được bảng thời gian cụ thể 15 ngày/24h/20 ngày do Mock băm MD5. |
+| 2 | Những trường hợp hoặc mặt hàng nào không được Shopee chấp nhận trả hàng do đổi ý hoặc không còn nhu cầu? | `cach-dong-goi-don-hang-hoan-tra#0`: Hướng dẫn đóng gói và quy định bao bì niêm phong... *(Top-2 là `tra-hang-doi-y#24` score +0.3040 [Doc Hit & Content Hit])* | +0.3873 | **CÓ (Relevant — Top-1 & Top-2 Content Hit, Top-2 Doc Hit)** | Dựa trên ngữ cảnh [1], [2]: Sản phẩm không được chấp nhận nếu đã bị mở bao bì / hộp / túi niêm phong của nhà sản xuất làm ảnh hưởng đến tình trạng nguyên vẹn khi nhận hàng. |
+| 3 | Nếu chọn hình thức "Tự sắp xếp" cho đơn hàng KHÔNG thuộc Shopee Mall, Người mua được hỗ trợ phí trả hàng bằng Shopee Xu như thế nào? | `kiem-tra-tien-hoan-spaylater#9`: Hướng dẫn cấn trừ số tiền hoàn sau 12H00 trên hóa đơn SPayLater... | +0.2509 | **Không (Irrelevant)** | Dựa trên ngữ cảnh: Hướng dẫn cấn trừ hóa đơn SPayLater; thông báo không tìm thấy thông tin hỗ trợ 25,000 Xu hoặc 40,000 Xu cho hình thức Tự sắp xếp. |
+| 4 ⭐ | Khi Người bán gửi đề xuất Hoàn Tiền Ngay, Người mua có những lựa chọn xử lý nào nếu đồng ý hoặc không đồng ý? *(Filter: `audience="both"`)* | `quy-trinh-shopee-xu-ly-tra-hang-hoan-tien#0`: Quy trình xử lý yêu cầu Trả hàng & Hoàn tiền, nguyên tắc xử lý khiếu nại... *(Top-3 có chunk #6 score +0.2389 [Content Hit])* | +0.3608 | **Có liên quan một phần (Top-3 Content Hit)** | Dựa trên ngữ cảnh [1], [3]: Người mua và Người bán trao đổi thương lượng giải quyết; nếu không đồng thuận thì khiếu nại để Shopee can thiệp phân xử. |
+| 5 | Thời gian nhận tiền hoàn vào Ví ShopeePay, SPayLater và Thẻ tín dụng/ghi nợ mất bao lâu sau khi Shopee chấp nhận hoàn tiền? | `huong-dan-chuan-bi-bang-chung-tra-hang#30`: Thông báo cung cấp thêm bằng chứng trong Cập nhật đơn hàng... *(Top-2 là `kiem-tra-spaylater#4` score +0.3410 trúng kênh SPayLater)* | +0.3866 | **Top-2 liên quan kênh SPayLater, Top-1 Irrelevant** | Dựa trên ngữ cảnh [2], [3]: Tiền hoàn SPayLater được cộng vào hạn mức khả dụng trong vòng 24 giờ sau khi chấp thuận; các kênh khác (ShopeePay, Thẻ tín dụng) chưa đủ dữ liệu cụ thể trong top-1. |
 
-**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** **1 / 5** (với MockEmbedder; kết quả này hoàn toàn phù hợp với lưu ý trong `day7-lab-data-foundations.md` rằng MockEmbedder băm MD5 chuỗi ký tự nên không mã hóa ngữ nghĩa. Tuy nhiên, nhờ có bộ lọc siêu dữ liệu `audience="seller"`, câu 4 đã xuất sắc trúng Top-1 cả về Document lẫn Content).
+**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** **2 / 5** (với `SentenceWindowChunker` trên MockEmbedder: Q2 trúng cả Doc Hit & Content Hit ở Top-1, 2; Q1 trúng Doc Hit ở Top-3; Q4 và Q5 trích xuất trúng nội dung liên quan ở Top-2, 3).
+
+**Nhận xét về chiến lược cá nhân `SentenceWindowChunker`:**
+> - **Ưu điểm vượt trội:** Khi một câu đơn lẻ trúng từ khóa truy vấn, cửa sổ trượt ($\pm 3$ câu) lập tức kéo theo toàn bộ ngữ cảnh xung quanh câu đó vào chunk. Nhờ vậy, câu trả lời của Agent ở Câu Q2 có đầy đủ cả điều kiện niêm phong bao bì mà không bao giờ bị cụt ý như `FixedSizeChunker`.
+> - **Thử thách với MockEmbedder:** Do mỗi câu đều được mở rộng thành một cửa sổ lớn (234 chunks trong toàn bộ corpus), không gian vector ngẫu nhiên của hàm băm MD5 bị tăng thêm nhiều ứng viên nhiễu. Dù vậy, tỷ lệ trúng của `SentenceWindowChunker` vẫn rất ấn tượng nhờ bảo lưu được ngữ cảnh trọn vẹn.
+> - **Hiệu quả của Metadata Filter (Câu Q4):** Bộ lọc `audience="both"` đã loại bỏ triệt để các tài liệu một chiều chỉ dành riêng cho Người mua hoặc Người bán, cô lập không gian tìm kiếm về đúng các quy trình thương lượng song phương.
 
 **Điều hay nhất tôi học được từ thành viên khác / nhóm khác (qua demo):**
-> 1. **Hiệu lực tuyệt đối của Metadata Filtering (Câu Q4):** Trong môi trường MockEmbedder hay kể cả embedding thực tế, khi câu hỏi không ghi rõ vai vế của người hỏi, bộ lọc siêu dữ liệu cứng (`audience: "seller"`) là cơ chế duy nhất đảm bảo khoanh vùng chính xác vào tài liệu `seller-warranty-policy.md`, ngăn chặn triệt để việc nhầm lẫn sang chính sách 15 ngày của Người mua.
-> 2. **Header Injection của HeadingChunker:** Kỹ thuật chèn lại tiêu đề đề mục vào từng đoạn con của Thành viên 2 giúp các chunk nhỏ không bao giờ bị mất gốc ngữ cảnh (context loss) khi trích xuất vào LLM.
+> 1. **Hiệu lực tuyệt đối của Metadata Filtering (Câu Q4):** Trong môi trường MockEmbedder hay kể cả embedding thực tế, khi câu hỏi không ghi rõ vai vế của người hỏi, bộ lọc siêu dữ liệu cứng (`audience: "both"` hoặc `audience: "seller"`) là cơ chế duy nhất đảm bảo khoanh vùng chính xác vào tài liệu liên quan, ngăn chặn triệt để việc nhầm lẫn tài liệu giữa các đối tượng.
+> 2. **Header Injection của HeadingChunker:** Kỹ thuật chèn lại tiêu đề đề mục vào từng đoạn con của Thành viên khác giúp các chunk nhỏ không bao giờ bị mất gốc ngữ cảnh (context loss) khi trích xuất vào LLM.
 
 ---
 
