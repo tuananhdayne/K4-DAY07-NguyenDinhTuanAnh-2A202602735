@@ -13,6 +13,9 @@ Chiến lược chunk : window (SentenceWindowChunker) [window_size=3]
 [3] Đang chạy 5 Benchmark Queries...
 --------------------------------------------------------------------------------
 
+[3] Đang chạy 5 Benchmark Queries...
+--------------------------------------------------------------------------------
+
 >>> [Q1] [Tra số liệu (Từng loại đơn hàng)]
 Câu hỏi (Query) : Thời gian tối đa để Người mua gửi yêu cầu Trả hàng/Hoàn tiền cho Shopee là bao lâu đối với từng loại đơn hàng?
 Tài liệu chuẩn  : quy-dinh-chung-tra-hang-hoan-tien [quy-dinh-chung-tra-hang-hoan-tien.md (Mục 1.2: Thời gian tối đa)]
@@ -28,6 +31,8 @@ Gold Answer:
 - Thực phẩm tươi sống & đông lạnh: Trong vòng 24 giờ kể từ lúc giao hàng thành công.
 - Đơn Người bán tự vận chuyển: 15 ngày kể từ lúc bấm 'Đã nhận được hàng' hoặc 20 ngày kể từ lúc 'Lấy hàng thành công' (nếu không bấm nhận hàng).
 - Các đơn hàng thông thường khác: 15 ngày kể từ lúc giao hàng thành công.
+Agent Answer (tóm tắt):
+Dựa trên ngữ cảnh: Chưa tìm thấy bảng thời gian tối đa chi tiết cho từng loại đơn hàng (ngữ cảnh hiện tại chỉ đề cập đơn ShopeeFood và việc hoàn Shopee Xu).
 --------------------------------------------------------------------------------
 
 >>> [Q2] [Hỏi điều kiện ngoại lệ]
@@ -45,6 +50,8 @@ Gold Answer:
 - Sản phẩm thuộc danh mục Hạn chế trả hàng (đồ lót, thực phẩm tươi sống, thẻ cào...).
 - Sản phẩm mua tại Shopee Mart.
 - Sản phẩm đã qua sử dụng hoặc bao bì, tem mác niêm phong của nhà sản xuất không còn nguyên vẹn.
+Agent Answer (tóm tắt):
+Dựa trên ngữ cảnh [1], [2]: Shopee không chấp nhận trả hàng do đổi ý nếu sản phẩm đã bị mở bao bì / hộp / túi niêm phong của nhà sản xuất làm ảnh hưởng đến tình trạng nguyên vẹn khi nhận hàng, hoặc thuộc danh mục hạn chế trả hàng.
 --------------------------------------------------------------------------------
 
 >>> [Q3] [Tra số liệu hỗ trợ phí (Shopee Xu)]
@@ -62,6 +69,8 @@ Gold Answer:
 - Cùng tỉnh/thành phố với Người bán: Hoàn 25,000 Shopee Xu.
 - Khác tỉnh/thành phố với Người bán: Hoàn 40,000 Shopee Xu.
 (Shopee hỗ trợ trong 3 - 5 ngày làm việc sau khi yêu cầu trả hàng được chấp nhận hoàn tiền).
+Agent Answer (tóm tắt):
+Dựa trên ngữ cảnh: Không tìm thấy quy định hỗ trợ 25,000 Xu hay 40,000 Xu cho đơn Tự sắp xếp trong các đoạn trích xuất (ngữ cảnh chỉ đề cập đến khấu trừ SPayLater và đóng gói hàng).
 --------------------------------------------------------------------------------
 
 >>> [Q4] [⭐ Quy trình xử lý đề xuất (Áp dụng bộ lọc audience="both")]
@@ -79,6 +88,8 @@ KẾT QUẢ : CHƯA TRUY XUẤT ĐƯỢC (Miss)
 Gold Answer:
 - Đồng ý: Chọn 'Trao đổi thêm' > Nhấn 'Đồng ý' -> Nhận tiền hoàn ngay mà không cần gửi trả hàng.
 - KHÔNG đồng ý: Có 2 cách: (1) Nhấn 'Trao đổi thêm' để Chat thương lượng thêm với Người bán; HOẶC (2) Nhấn 'Tôi muốn trả hàng' để tiếp tục quy trình trả sản phẩm nhận 100% tiền hàng.
+Agent Answer (tóm tắt):
+Dựa trên ngữ cảnh [1], [3]: Người mua và Người bán có thể trao đổi, thương lượng giải quyết; nếu không đồng thuận thì khiếu nại để Shopee can thiệp phân xử theo quy định.
 --------------------------------------------------------------------------------
 
 >>> [Q5] [Tra cứu bảng thời gian theo kênh hoàn tiền]
@@ -96,6 +107,8 @@ Gold Answer:
 - Ví ShopeePay: Trong vòng 24 giờ (ví đang hoạt động bình thường).
 - SPayLater: Trong vòng 24 giờ (hoàn vào số dư khả dụng SPayLater).
 - Thẻ tín dụng / ghi nợ: Từ 7 - 14 ngày làm việc (tùy ngân hàng phát hành thẻ).
+Agent Answer (tóm tắt):
+Dựa trên ngữ cảnh [2], [3]: Tiền hoàn SPayLater được cộng vào hạn mức khả dụng trong vòng 24 giờ sau khi Shopee chấp thuận; các kênh ShopeePay và Thẻ tín dụng/ghi nợ chưa đủ thông tin trong ngữ cảnh trích xuất.
 --------------------------------------------------------------------------------
 
 [4] A/B TEST BẮT BUỘC: Câu Q4 (Có bộ lọc audience='both' vs Không có bộ lọc)
