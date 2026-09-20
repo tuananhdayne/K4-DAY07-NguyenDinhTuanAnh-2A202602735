@@ -348,7 +348,7 @@ if __name__ == "__main__":
         help="Chiến lược chunk (mặc định: window / SentenceWindowChunker)",
     )
     parser.add_argument("--top-k", type=int, default=3, help="Độ sâu Top-K")
-    parser.add_argument("--window-size",'-w', type=int, default=2, help="Số câu trước và sau trong cửa sổ ngữ cảnh (cho SentenceWindowChunker)")
+    parser.add_argument("--window-size", "-w", type=int, default=3, help="Số câu trước và sau trong cửa sổ ngữ cảnh (cho SentenceWindowChunker)")
     parser.add_argument("--out-file", type=str, default="ket_qua_benchmark.txt", help="File xuất kết quả")
     args = parser.parse_args()
 
