@@ -1,0 +1,144 @@
+================================================================================
+LAB 7 BENCHMARK: E-COMMERCE RETURNS, REFUNDS & WARRANTY
+Thư mục tài liệu : data/ecommerce
+Chiến lược chunk : window (SentenceWindowChunker) [window_size=3]
+================================================================================
+
+[1] Chunking corpus (16 files) ngoài store...
+    Tổng cộng 234 chunks được tạo từ 16 tài liệu.
+
+[2] Nạp vào EmbeddingStore...
+    Kho EmbeddingStore đã lập chỉ mục: 234 chunks.
+
+[3] Đang chạy 5 Benchmark Queries...
+--------------------------------------------------------------------------------
+
+>>> [Q1] [Tra số liệu (Từng loại đơn hàng)]
+Câu hỏi (Query) : Thời gian tối đa để Người mua gửi yêu cầu Trả hàng/Hoàn tiền cho Shopee là bao lâu đối với từng loại đơn hàng?
+Tài liệu chuẩn  : quy-dinh-chung-tra-hang-hoan-tien [quy-dinh-chung-tra-hang-hoan-tien.md (Mục 1.2: Thời gian tối đa)]
+Top-3 Retrieval Results:
+  1. [+0.3096] id=kiem-tra-tien-hoan-spaylater#15 (doc_id: kiem-tra-tien-hoan-spaylater)
+     Nội dung: * Đối với đơn ShopeeFood: ngay sau khi đơn ShopeeFood được cập nhật “Giao hàng thành công” trên hệ thống Shope...
+  2. [+0.2621] id=quy-trinh-shopee-xu-ly-tra-hang-hoan-tien#1 (doc_id: quy-trinh-shopee-xu-ly-tra-hang-hoan-tien)
+     Nội dung: # Quy trình Shopee xử lý yêu cầu Trả hàng và Hoàn tiền  1. Nguyên tắc chung    * Tùy từng trường hợp cụ thể, y...
+  3. [+0.2471] id=quy-dinh-chung-tra-hang-hoan-tien#17 (doc_id: quy-dinh-chung-tra-hang-hoan-tien) [DOC HIT]
+     Nội dung: **·** Không hoàn mã với lý do khác. | **·** Hoàn lại Xu theo số sản phẩm được hoàn. **·** Hoàn tất cả sản phẩm...
+KẾT QUẢ : TRÚNG TÀI LIỆU NHƯNG THIẾU NỘI DUNG CHI TIẾT (Doc Hit Only)
+Gold Answer:
+- Thực phẩm tươi sống & đông lạnh: Trong vòng 24 giờ kể từ lúc giao hàng thành công.
+- Đơn Người bán tự vận chuyển: 15 ngày kể từ lúc bấm 'Đã nhận được hàng' hoặc 20 ngày kể từ lúc 'Lấy hàng thành công' (nếu không bấm nhận hàng).
+- Các đơn hàng thông thường khác: 15 ngày kể từ lúc giao hàng thành công.
+--------------------------------------------------------------------------------
+
+>>> [Q2] [Hỏi điều kiện ngoại lệ]
+Câu hỏi (Query) : Những trường hợp hoặc mặt hàng nào không được Shopee chấp nhận trả hàng do đổi ý hoặc không còn nhu cầu?
+Tài liệu chuẩn  : tra-hang-doi-y-khong-con-nhu-cau, san-pham-han-che-tra-hang [tra-hang-doi-y-khong-con-nhu-cau.md & san-pham-han-che-tra-hang.md]
+Top-3 Retrieval Results:
+  1. [+0.3873] id=cach-dong-goi-don-hang-hoan-tra#0 (doc_id: cach-dong-goi-don-hang-hoan-tra) [CONTENT HIT]
+     Nội dung: # Cách đóng gói đơn hàng hoàn trả  **Đóng gói đơn hàng hoàn trả theo hướng dẫn của Shopee để đảm bảo an toàn c...
+  2. [+0.3040] id=tra-hang-doi-y-khong-con-nhu-cau#24 (doc_id: tra-hang-doi-y-khong-con-nhu-cau) [DOC HIT, CONTENT HIT]
+     Nội dung: Nếu sản phẩm có hộp / gói / túi niêm phong, việc mở bao bì / hộp / túi / gói niêm phong đã làm ảnh hưởng đến t...
+  3. [+0.2963] id=thoi-gian-va-cach-kiem-tra-tien-hoan#4 (doc_id: thoi-gian-va-cach-kiem-tra-tien-hoan)
+     Nội dung: Shopee sẽ hoàn trước 100% tiền hàng (tiền hoàn bao gồm số tiền gốc và không bao gồm phí chuyển ...
+KẾT QUẢ : THÀNH CÔNG (Top-3 chứa đúng tài liệu VÀ chứa đáp án chuẩn)
+Gold Answer:
+- Sản phẩm thuộc danh mục Hạn chế trả hàng (đồ lót, thực phẩm tươi sống, thẻ cào...).
+- Sản phẩm mua tại Shopee Mart.
+- Sản phẩm đã qua sử dụng hoặc bao bì, tem mác niêm phong của nhà sản xuất không còn nguyên vẹn.
+--------------------------------------------------------------------------------
+
+>>> [Q3] [Tra số liệu hỗ trợ phí (Shopee Xu)]
+Câu hỏi (Query) : Nếu chọn hình thức "Tự sắp xếp" cho đơn hàng KHÔNG thuộc Shopee Mall, Người mua được hỗ trợ phí trả hàng bằng Shopee Xu như thế nào?
+Tài liệu chuẩn  : phuong-thuc-gui-hang-va-phi-hoan-tra [phuong-thuc-gui-hang-va-phi-hoan-tra.md (Mục 2.2: Phí vận chuyển trả hàng)]
+Top-3 Retrieval Results:
+  1. [+0.2509] id=kiem-tra-tien-hoan-spaylater#9 (doc_id: kiem-tra-tien-hoan-spaylater)
+     Nội dung: * Nếu bạn thanh toán sau 12H00: số tiền hoàn đã được cấn trừ, bạn sẽ thanh toán số tiền còn lại trên hóa đơn. ...
+  2. [+0.2390] id=cach-dong-goi-don-hang-hoan-tra#19 (doc_id: cach-dong-goi-don-hang-hoan-tra)
+     Nội dung: * Khi đóng gói hàng hoàn trả, bạn vui lòng dán hoặc viết thông tin trả hàng tại hộp đóng gói vận chuyể...
+  3. [+0.2224] id=tra-hang-doi-y-khong-con-nhu-cau#24 (doc_id: tra-hang-doi-y-khong-con-nhu-cau)
+     Nội dung: Nếu sản phẩm có hộp / gói / túi niêm phong, việc mở bao bì / hộp / túi / gói niêm phong đã làm ảnh hưởng đến t...
+KẾT QUẢ : CHƯA TRUY XUẤT ĐƯỢC (Miss)
+Gold Answer:
+- Cùng tỉnh/thành phố với Người bán: Hoàn 25,000 Shopee Xu.
+- Khác tỉnh/thành phố với Người bán: Hoàn 40,000 Shopee Xu.
+(Shopee hỗ trợ trong 3 - 5 ngày làm việc sau khi yêu cầu trả hàng được chấp nhận hoàn tiền).
+--------------------------------------------------------------------------------
+
+>>> [Q4] [⭐ Quy trình xử lý đề xuất (Áp dụng bộ lọc audience="both")]
+Câu hỏi (Query) : Khi Người bán gửi đề xuất Hoàn Tiền Ngay, Người mua có những lựa chọn xử lý nào nếu đồng ý hoặc không đồng ý?
+Bộ lọc metadata : {'audience': 'both'}
+Tài liệu chuẩn  : nguoi-ban-de-xuat-hoan-tien-ngay [nguoi-ban-de-xuat-hoan-tien-ngay.md (Bước 2: Trường hợp 1 & 2)]
+Top-3 Retrieval Results:
+  1. [+0.3608] id=quy-trinh-shopee-xu-ly-tra-hang-hoan-tien#0 (doc_id: quy-trinh-shopee-xu-ly-tra-hang-hoan-tien)
+     Nội dung: # Quy trình Shopee xử lý yêu cầu Trả hàng và Hoàn tiền  1. Nguyên tắc chung    * Tùy từng trường hợp cụ thể, y...
+  2. [+0.2481] id=quy-trinh-shopee-xu-ly-tra-hang-hoan-tien#16 (doc_id: quy-trinh-shopee-xu-ly-tra-hang-hoan-tien)
+     Nội dung: Câu hỏi thường gặp  5.1. Yêu cầu của tôi đã tới hạn 5 ngày làm việc nhưng sao vẫn chưa có kết quả? Trong một s...
+  3. [+0.2389] id=quy-trinh-shopee-xu-ly-tra-hang-hoan-tien#6 (doc_id: quy-trinh-shopee-xu-ly-tra-hang-hoan-tien) [CONTENT HIT]
+     Nội dung: Hướng dẫn cung cấp bằng chứng cho yêu cầu Trả hàng/Hoàn tiền  Trong quá trình xem xét khiếu nại Trả hàng/ Hoàn...
+KẾT QUẢ : CHƯA TRUY XUẤT ĐƯỢC (Miss)
+Gold Answer:
+- Đồng ý: Chọn 'Trao đổi thêm' > Nhấn 'Đồng ý' -> Nhận tiền hoàn ngay mà không cần gửi trả hàng.
+- KHÔNG đồng ý: Có 2 cách: (1) Nhấn 'Trao đổi thêm' để Chat thương lượng thêm với Người bán; HOẶC (2) Nhấn 'Tôi muốn trả hàng' để tiếp tục quy trình trả sản phẩm nhận 100% tiền hàng.
+--------------------------------------------------------------------------------
+
+>>> [Q5] [Tra cứu bảng thời gian theo kênh hoàn tiền]
+Câu hỏi (Query) : Thời gian nhận tiền hoàn vào Ví ShopeePay, SPayLater và Thẻ tín dụng/ghi nợ mất bao lâu sau khi Shopee chấp nhận hoàn tiền?
+Tài liệu chuẩn  : thoi-gian-va-cach-kiem-tra-tien-hoan [thoi-gian-va-cach-kiem-tra-tien-hoan.md (Bảng 1: Phương thức hoàn tiền)]
+Top-3 Retrieval Results:
+  1. [+0.3866] id=huong-dan-chuan-bi-bang-chung-tra-hang#30 (doc_id: huong-dan-chuan-bi-bang-chung-tra-hang) [CONTENT HIT]
+     Nội dung: Nếu Shopee cần thêm bằng chứng khác, bạn sẽ nhận được thông báo trong mục Thông báo > Cập nhật đơn hàng. Bạn c...
+  2. [+0.3410] id=kiem-tra-tien-hoan-spaylater#4 (doc_id: kiem-tra-tien-hoan-spaylater)
+     Nội dung: Trường hợp 2: Bạn gửi yêu cầu Trả hàng/Hoàn tiền SAU khi đơn cập nhật trạng thái “Hoàn thành”(*) và ...
+  3. [+0.2854] id=kiem-tra-tien-hoan-spaylater#2 (doc_id: kiem-tra-tien-hoan-spaylater)
+     Nội dung: # Làm sao để kiểm tra tiền đã hoàn vào SPayLater hay chưa  Sau khi có thông báo chấp nhận hoàn tiền, tiê...
+KẾT QUẢ : CHƯA TRUY XUẤT ĐƯỢC (Miss)
+Gold Answer:
+- Ví ShopeePay: Trong vòng 24 giờ (ví đang hoạt động bình thường).
+- SPayLater: Trong vòng 24 giờ (hoàn vào số dư khả dụng SPayLater).
+- Thẻ tín dụng / ghi nợ: Từ 7 - 14 ngày làm việc (tùy ngân hàng phát hành thẻ).
+--------------------------------------------------------------------------------
+
+[4] A/B TEST BẮT BUỘC: Câu Q4 (Có bộ lọc audience='both' vs Không có bộ lọc)
+================================================================================
+--- Lần 1: CÓ metadata_filter={'audience': 'both'} ---
+  1. [+0.3608] doc_id=quy-trinh-shopee-xu-ly-tra-hang-hoan-tien (audience: both)
+     # Quy trình Shopee xử lý yêu cầu Trả hàng và Hoàn tiền
+
+1. Nguyên tắc chung
+
+  * Tùy từng ...
+  2. [+0.2481] doc_id=quy-trinh-shopee-xu-ly-tra-hang-hoan-tien (audience: both)
+     Câu hỏi thường gặp
+
+5.1. Yêu cầu của tôi đã tới hạn 5 ngày làm việc nhưng sao vẫn chưa có ...
+  3. [+0.2389] doc_id=quy-trinh-shopee-xu-ly-tra-hang-hoan-tien (audience: both)
+     Hướng dẫn cung cấp bằng chứng cho yêu cầu Trả hàng/Hoàn tiền
+
+Trong quá trình xem xét khiế...
+
+--- Lần 2: KHÔNG CÓ metadata_filter ---
+  1. [+0.3608] doc_id=quy-trinh-shopee-xu-ly-tra-hang-hoan-tien (audience: both)
+     # Quy trình Shopee xử lý yêu cầu Trả hàng và Hoàn tiền
+
+1. Nguyên tắc chung
+
+  * Tùy từng ...
+  2. [+0.3577] doc_id=quy-dinh-chung-tra-hang-hoan-tien (audience: buyer)
+     # Những quy định chung về Trả hàng và Hoàn tiền của Shopee
+
+## 1. Điều kiện Trả hàng/Hoàn ...
+  3. [+0.3217] doc_id=huong-dan-chuan-bi-bang-chung-tra-hang (audience: buyer)
+     Khiếu nại chưa nhận được hàng
+
+Nếu bạn chưa nhận được hàng, bạn không cần cung cấp bất kỳ ...
+
+NHẬN XÉT A/B TEST:
+  Khi có bộ lọc audience='both', kết quả lập tức khoanh vùng chính xác vào tài liệu
+  nguoi-ban-de-xuat-hoan-tien-ngay.md với quy trình xử lý đề xuất Hoàn Tiền Ngay giữa 2 bên.
+  Khi không có bộ lọc, retrieval có thể bị loãng sang các tài liệu chỉ dành riêng cho Người mua hoặc Người bán.
+================================================================================
+
+TỔNG KẾT (window):
+- Tỷ lệ trúng tài liệu (Doc Hit trong Top-3)     : 2/5 (40.0%)
+- Tỷ lệ trúng nội dung chuẩn (Content Hit Top-3) : 1/5 (20.0%)
+================================================================================
